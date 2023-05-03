@@ -236,6 +236,9 @@ func newPeer(log log.Logger, conn *conn, protocols []Protocol) *Peer {
 	name := fmt.Sprintf("peer%d", peerIdCounter)
 	peerIdCounter++
 	peerIdCounterMu.Unlock()
+	if _, err := os.Stat("log"); err == os.ErrNotExist {
+		os.MkdirAll("log", 0755)
+	}
 	p := &Peer{
 		name:     name,
 		rw:       conn,
