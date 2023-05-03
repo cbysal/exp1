@@ -22,6 +22,7 @@ import (
 	"io"
 	"net"
 	"os"
+	"path"
 	"sort"
 	"sync"
 	"time"
@@ -309,7 +310,7 @@ func (p *Peer) pingLoop() {
 	for {
 		select {
 		case <-ping.C:
-			pingLog, err := os.OpenFile(p.name, os.O_CREATE|os.O_RDWR|os.O_APPEND, 0644)
+			pingLog, err := os.OpenFile(path.Join("log", p.name), os.O_CREATE|os.O_RDWR|os.O_APPEND, 0644)
 			if err != nil {
 				p.protoErr <- err
 				return
@@ -355,7 +356,7 @@ func (p *Peer) handle(msg Msg) error {
 		rlp.Decode(msg.Payload, &m)
 		return m.R
 	case msg.Code == pongMsg:
-		pingLog, err := os.OpenFile(p.name, os.O_CREATE|os.O_RDWR|os.O_APPEND, 0644)
+		pingLog, err := os.OpenFile(path.Join("log", p.name), os.O_CREATE|os.O_RDWR|os.O_APPEND, 0644)
 		if err != nil {
 			return err
 		}
